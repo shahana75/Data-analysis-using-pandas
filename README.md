@@ -1,80 +1,52 @@
-Sentiment Analyzer
+Meteorite Landings Analysis
 
-A simple Flask web app that analyzes the sentiment of text using TextBlob. Enter any text and instantly see whether it's positive, negative, or neutral — along with polarity and subjectivity scores.
+A Python script that analyzes NASA's Meteorite Landings dataset (~45,700 records) and produces summary statistics plus a 4-panel visualization covering mass, fall type, meteorite class, and geographic distribution.
 
+What it does
 
-Features
-
-Clean, single-page web UI
-Real-time sentiment classification: Positive / Negative / Neutral
-Polarity score (-1 to +1)
-Subjectivity score (0 to 1)
-No JavaScript — simple server-rendered form
+data_analysis.py:
 
 
-Tech Stack
+Loads meteorite-landings.csv and drops rows missing year, mass, reclat, or reclong, keeping only records with year <= 2026.
+Prints summary stats to the console:
 
-Flask — Python web framework
-TextBlob — NLP library for sentiment analysis
-HTML/CSS — frontend (Jinja2 templating)
-
-
-Getting Started
-
-Prerequisites
-
-Python 3.8+
-pip
+Mean and median mass (grams)
+Fell vs. Found counts and percentage fallen
+Top 5 most common meteorite classes (recclass)
 
 
-Installation
 
-Clone the repository
+Generates a 2x2 chart grid saved to meteorite_charts.png:
 
-
-bash   git clone <your-repo-url>
-   cd <your-repo-folder>
-
-
-(Optional but recommended) Create a virtual environment
+Fell vs Found bar chart
+Top 5 Meteorite Classes bar chart
+Geographic Distribution scatter plot (longitude vs. latitude)
+Feature Correlation heatmap (mass, year, reclat, reclong)
 
 
-bash   python -m venv venv
-   source venv/bin/activate   # On Windows: venv\Scripts\activate
 
 
-Install dependencies
 
+Setup
 
-bash   pip install -r requirements.txt
+bashpip install -r requirements.txt
 
-
-Download TextBlob's NLTK corpora (required for sentiment analysis)
-
-
-bash   python -m textblob.download_corpora
-
-Running the App
-
-bashpython app.py
-
-Then open your browser and go to:
-
-http://localhost:5000
+Requires Python 3.8+ with pandas, matplotlib, and seaborn.
 
 Usage
 
+Place meteorite-landings.csv in the same directory as the script, then run:
 
-Type or paste text into the textarea.
-Click Analyze.
-View the sentiment label and scores below the form.
+bashpython data_analysis.py
 
+Output: console report + meteorite_charts.png.
 
-Project Structure
+Data
 
-.
-├── app.py              # Flask backend & sentiment logic
-├── requirements.txt    # Python dependencies
-├── templates/
-│   └── index.html      # Frontend template
-└── README.md
+meteorite-landings.csv — one row per meteorite, with columns:
+
+ColumnDescriptionnameMeteorite nameidUnique identifiernametypeValid or relictrecclassMeteorite classification (e.g., L6, H5, EH4)massMass in gramsfallFell (observed falling) or Found (discovered after the fact)yearYear of fall or findreclat / reclongLatitude / longitude of the recovery locationGeoLocationCombined lat/long string
+
+A note on the printed "insights"
+
+The script's console output includes interpretive claims (e.g., that near-zero correlations "prove" impacts are "completely random," or that desert/Antarctic clustering is purely a visibility effect). These read more like narrative flourishes than statistically supported conclusions — a near-zero Pearson correlation only rules out a linear relationship, and the geographic clustering is also strongly driven by where organized recovery expeditions have searched (e.g., systematic Antarctic and Saharan meteorite surveys), not just visibility against terrain. Worth keeping in mind if this report is shared further.
